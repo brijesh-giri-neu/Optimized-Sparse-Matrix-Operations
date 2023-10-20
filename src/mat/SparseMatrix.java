@@ -91,13 +91,30 @@ public class SparseMatrix extends AbstractMatrix {
           "Column number in get cannot be beyond the bounds of the matrix");
     }
 
-    // compromise - I always pick the row sentinel to access a node
-    // Instead of  maintaining the count of nodes in each sentinel
-    // and deciding between row/column sentinel based on that.
-    RowSentinel<Float> head = this.rows.get(i);
+    float result;
+    int deltaRow = Math.abs(this.rows.size() / 2 - i);
+    int deltaCol = Math.abs(this.cols.size() / 2 - j);
 
-    Float nullableFloat = head.get(i, j, this.rows.size());
-    return nullableFloat == null ? 0f : nullableFloat;
+    if (deltaRow < deltaCol) {
+      RowSentinel<Float> head = this.rows.get(i);
+
+      Float nullableFloat = head.get(i, j, this.rows.size());
+      result = nullableFloat == null ? 0f : nullableFloat;
+    } else {
+      ColumnSentinel<Float> head = this.cols.get(j);
+
+      Float nullableFloat = head.get(i, j, this.cols.size());
+      result = nullableFloat == null ? 0f : nullableFloat;
+    }
+
+//    // compromise - I always pick the row sentinel to access a node
+//    // Instead of  maintaining the count of nodes in each sentinel
+//    // and deciding between row/column sentinel based on that.
+//    RowSentinel<Float> head = this.rows.get(i);
+//    Float nullableFloat = head.get(i, j, this.rows.size());
+//    return nullableFloat == null ? 0f : nullableFloat;
+
+    return result;
   }
 
   // This implementation assumes the elements of a row in a SparseMatrix are in sorted order
@@ -376,7 +393,7 @@ public class SparseMatrix extends AbstractMatrix {
         float sum = 0f;
 
         while (rowA != headRowA) {
-          sum += rowA.getDataAtNode() + other.get(rowA.colIndex, j);
+          sum += rowA.getDataAtNode() * other.get(rowA.colIndex, j);
           rowA = rowA.right;
         }
 

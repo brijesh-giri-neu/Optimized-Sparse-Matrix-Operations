@@ -380,49 +380,49 @@ public class ArrayMatrixTest {
     }
   }
 
-  //    @Test(timeout = 10000)
-  //    public void premulMixed() {
-  //      int size = 100;
-  //      ArrayMatrix a = new ArrayMatrix(size);
-  //      SparseMatrix b = new SparseMatrix(size);
-  //      float[][] expectedA = new float[size][size];
-  //      float[][] expectedB = new float[size][size];
-  //
-  //      // Fill ArrayMatrix
-  //      for (int i = 0; i < 0.85 * size; i++) {
-  //        // For Matrix B
-  //        int rowIndexB = new Random().nextInt(size);
-  //        int colIndexB = new Random().nextInt(size);
-  //        float randomValB = new Random().nextFloat();
-  //
-  //        expectedB[rowIndexB][colIndexB] = randomValB;
-  //        b.set(rowIndexB, colIndexB, randomValB);
-  //      }
-  //
-  //      // 40 percent density
-  //      for (int i = 0; i < 0.4 * size; i++) {
-  //        // For Matrix B
-  //        int rowIndexB = new Random().nextInt(size);
-  //        int colIndexB = new Random().nextInt(size);
-  //        float randomValB = new Random().nextFloat();
-  //
-  //        expectedB[rowIndexB][colIndexB] = randomValB;
-  //        b.set(rowIndexB, colIndexB, randomValB);
-  //      }
-  //
-  //      SquareMatrix c = a.premul(b);
-  //
-  //      for (int i = 0; i < size; i++) {
-  //        for (int j = 0; j < size; j++) {
-  //          float expectedValue = 0f;
-  //          for (int k = 0; k < size; k++) {
-  //            expectedValue += expectedB[i][k] * expectedA[k][j];
-  //          }
-  //          float result = c.get(i, j);
-  //          assertEquals(expectedValue, result, delta);
-  //        }
-  //      }
-  //    }
+      @Test(timeout = 10000)
+      public void premulMixed() {
+        int size = 1;
+        ArrayMatrix a = new ArrayMatrix(size);
+        SparseMatrix b = new SparseMatrix(size);
+        float[][] expectedA = new float[size][size];
+        float[][] expectedB = new float[size][size];
+
+        // Fill ArrayMatrix
+        for (int i = 0; i < 0.85 * size; i++) {
+          // For Matrix B
+          int rowIndexB = new Random().nextInt(size);
+          int colIndexB = new Random().nextInt(size);
+          float randomValB = new Random().nextFloat();
+
+          expectedB[rowIndexB][colIndexB] = randomValB;
+          b.set(rowIndexB, colIndexB, randomValB);
+        }
+
+        // 40 percent density
+        for (int i = 0; i < 0.4 * size; i++) {
+          // For Matrix B
+          int rowIndexB = new Random().nextInt(size);
+          int colIndexB = new Random().nextInt(size);
+          float randomValB = new Random().nextFloat();
+
+          expectedB[rowIndexB][colIndexB] = randomValB;
+          b.set(rowIndexB, colIndexB, randomValB);
+        }
+
+        SquareMatrix c = a.premul(b);
+
+        for (int i = 0; i < size; i++) {
+          for (int j = 0; j < size; j++) {
+            float expectedValue = 0f;
+            for (int k = 0; k < size; k++) {
+              expectedValue += expectedB[i][k] * expectedA[k][j];
+            }
+            float result = c.get(i, j);
+            assertEquals(expectedValue, result, delta);
+          }
+        }
+      }
 
   @Test(timeout = 10000)
   public void postmulArray() {

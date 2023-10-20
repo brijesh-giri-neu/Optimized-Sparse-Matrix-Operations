@@ -73,4 +73,52 @@ class ColumnSentinel<T> extends AbstractNode<T> {
 
     return Arrays.asList(topOfDataNode, bottomOfDataNode);
   }
+
+  /**
+   * Returns the item at the given row and column, in this matrix using a Col Sentinel to traverse.
+   *
+   * @param rowIndex row index
+   * @param colIndex column index
+   * @param size     size of the matrix to decide traversal direction
+   * @return the value of the node located at given index
+   */
+  T get(int rowIndex, int colIndex, int size) {
+    // assumption - this is the correct row sentinel
+
+    // have used multiple returns instead of assigning result to variable
+    // as it improved performance during testing.
+    AbstractNode<T> curr;
+    //null is the default value for Java Generics, just like 0 is default for numeric types
+    T data = null;
+
+    // no nodes in the list, return null
+    if (this.top == this && this.bottom == this) {
+      return data;
+    }
+
+    if (rowIndex <= size / 2) { //start from beginning and move forwards
+      curr = this.bottom;
+
+      //loop through each DataNode and try to find the relevant node
+      while (curr != this) {
+        if (curr.rowIndex == rowIndex && curr.colIndex == colIndex) {
+          return curr.getDataAtNode();
+        }
+        curr = curr.bottom;
+      }
+    } else { //start from the end and move backwards
+      curr = this.top;
+
+      //loop through each DataNode and try to find the relevant node
+      while (curr != this) {
+        if (curr.rowIndex == rowIndex && curr.colIndex == colIndex) {
+          return curr.getDataAtNode();
+        }
+        curr = curr.top;
+      }
+    }
+
+    // such a node does not exist in the list,return null
+    return data;
+  }
 }
