@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 import java.util.Random;
 import mat.ArrayMatrix;
 import mat.SparseMatrix;
+import mat.SquareMatrix;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -406,7 +407,7 @@ public class SparseMatrixTest {
       b.set(rowIndexB, colIndexB, randomValB);
     }
 
-    SparseMatrix c = (SparseMatrix) a.premul(b);
+    SquareMatrix c = a.premul(b);
 
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
@@ -491,7 +492,7 @@ public class SparseMatrixTest {
       b.set(rowIndexB, colIndexB, randomValB);
     }
 
-    SparseMatrix c = (SparseMatrix) a.postmul(b);
+    SquareMatrix c = a.postmul(b);
 
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {

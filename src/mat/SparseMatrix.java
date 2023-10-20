@@ -362,30 +362,22 @@ public class SparseMatrix extends AbstractMatrix {
 
   @Override
   protected SquareMatrix postmulArrayMatrix(ArrayMatrix other) {
-    SparseMatrix result = new SparseMatrix(this.rows.size());
+    SquareMatrix result = new ArrayMatrix(this.rows.size());
     // vars to traverse rows of this matrix and cols of other matrix
     RowSentinel<Float> headRowA;
     AbstractNode<Float> rowA;
 
     for (int i = 0; i < this.rows.size(); i++) {
-      headRowA = this.rows.get(i);
-      rowA = headRowA.right;
-
-      // if row has no elements skip row iteration for all cols in result
-      if (rowA == headRowA) {
-        continue;
-      }
-
       for (int j = 0; j < this.cols.size(); j++) {
+        headRowA = this.rows.get(i);
+        rowA = headRowA.right;
+
         // multiplication value at (i,j)
         float sum = 0f;
 
-        for (int k = 0; k < this.rows.size(); k++) {
-          // indices match multiply and add to the sum
-          if (rowA.colIndex == k) {
-            sum += rowA.getDataAtNode() * other.get(k, j); // rowA data at (i,k)
-            rowA = rowA.right;
-          }
+        while (rowA != headRowA) {
+          sum += rowA.getDataAtNode() + other.get(rowA.colIndex, j);
+          rowA = rowA.right;
         }
 
         if (sum != 0f) {
@@ -399,31 +391,23 @@ public class SparseMatrix extends AbstractMatrix {
 
   @Override
   protected SquareMatrix premulArrayMatrix(ArrayMatrix other) {
-    SparseMatrix result = new SparseMatrix(this.rows.size());
+    SquareMatrix result = new ArrayMatrix(this.rows.size());
     // vars to traverse rows of this matrix and cols of other matrix
     ColumnSentinel<Float> headColB;
     AbstractNode<Float> colB;
 
     // computing result (i,j)
-    for (int j = 0; j < this.cols.size(); j++) {
-      headColB = this.cols.get(j);
-      colB = headColB.bottom;
+    for (int i = 0; i < this.cols.size(); i++) {
+      for (int j = 0; j < this.rows.size(); j++) {
+        headColB = this.cols.get(j);
+        colB = headColB.bottom;
 
-      // if col has no elements skip col iteration for all rows in result
-      if (colB == headColB) {
-        continue;
-      }
-
-      for (int i = 0; i < this.rows.size(); i++) {
         // multiplication value at (i,j)
         float sum = 0f;
 
-        for (int k = 0; k < this.cols.size(); k++) {
-          // indices match multiply and add to the sum
-          if (colB.rowIndex == k) {
-            sum += other.get(i, k) * colB.getDataAtNode(); // colB data at rowIndex k i.e (k,j)
-            colB = colB.bottom;
-          }
+        while (colB != headColB) {
+          sum += colB.getDataAtNode() * other.get(i, colB.rowIndex);
+          colB = colB.bottom;
         }
 
         if (sum != 0f) {
